@@ -1,0 +1,54 @@
+pipelines:
+
+  - name: Pipeline_1
+    steps:
+      - name: Pipeline_1_step_1
+        type: Bash
+        configuration:
+          outputResources:
+            - name: Resource_1
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - sleep 10
+            - write_output Resource_1 test=$run_number
+
+  - name: Pipeline_2
+    steps:
+      - name: Pipeline_2_step_1
+        type: Bash
+        configuration:
+          outputResources:
+            - name: Resource_2
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - sleep 10
+            - write_output Resource_2 test=$run_number
+
+  - name: Pipeline_3
+    configuration:
+      dependencyMode:
+        waitOnParentComplete: true
+    steps:
+      - name: Pipeline_3_step_1
+        type: Bash
+        configuration:
+          inputResources:
+            - name: Resource_1
+            - name: Resource_2
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - sleep 10
+
+
+resources:
+  - name: Resource_1
+    type: PropertyBag
+    configuration:
+      test: test
+  - name: Resource_2
+    type: PropertyBag
+    configuration:
+      test: test
